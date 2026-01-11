@@ -5,6 +5,7 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-green)
 
 ## 📖 Project Overview
+
 **JobLinkUG** is a capstone project developed by final-year Business Computing students at **Makerere University Business School**. The platform addresses the fragmentation in Uganda's labor market by centralizing employment opportunities and leveraging Artificial Intelligence to connect job seekers with legitimate employers.
 
 Unlike traditional job boards, JobLinkUG utilizes **AI Vector Embeddings and Semantic Search** to understand the context of candidate skills and job requirements. This allows for higher-quality matches beyond simple keyword searching, reducing recruitment bias and improving hiring efficiency for both the formal and informal sectors.
@@ -12,6 +13,7 @@ Unlike traditional job boards, JobLinkUG utilizes **AI Vector Embeddings and Sem
 ---
 
 ## 🚀 Key Features
+
 * **AI-Driven Matching:** Semantic recommendation engine using **Vector Embeddings** and Cosine Similarity to score candidate relevance.
 * **Employer Verification:** Robust verification workflows to eliminate "ghost jobs" and scams, a critical issue in Uganda's digital recruitment space.
 * **Real-Time Notifications:** Instant alerts for new matches and application updates via Inngest.
@@ -21,6 +23,7 @@ Unlike traditional job boards, JobLinkUG utilizes **AI Vector Embeddings and Sem
 ---
 
 ## 🛠️ Technology Stack
+
 This project follows a modern **Design Science Research (DSR)** approach using the following technologies:
 
 | Category | Technology |
@@ -37,9 +40,10 @@ This project follows a modern **Design Science Research (DSR)** approach using t
 ---
 
 ## 👥 The Team
+
 **Project Title:** Developing a JobLink Management Platform for Employees and Employers in Uganda
 
-**Supervised by:** Miss. Nyesiga Catherine (Department of Applied Computing & IT)
+**Supervised by:** Ms. Nyesiga Catherine (Department of Applied Computing & IT)
 
 | Name | Registration Number | Role |
 | :--- | :--- | :--- |
@@ -56,6 +60,7 @@ This project follows a modern **Design Science Research (DSR)** approach using t
 To run this project locally, follow these steps:
 
 ### 1. Clone the repository
+
 ```bash
 git clone [https://github.com/Festo-Wampamba/job-link.git](https://github.com/Festo-Wampamba/job-link.git)
 cd job-link

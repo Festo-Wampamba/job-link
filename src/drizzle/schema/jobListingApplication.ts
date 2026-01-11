@@ -2,6 +2,7 @@ import { integer, pgEnum, pgTable, primaryKey, text, uuid, varchar } from "drizz
 import { createdAt, updatedAt } from "../schemaHelpers";
 import { JobListingTable } from "./jobListing";
 import { UserTable } from "./user";
+import { relations } from "drizzle-orm";
 
 export const applicationStages = [ "applied", "shortlisted", "interviewing", "offer", "hired", "rejected" ] as const
 export type ApplicationStage = (typeof applicationStages )[number]
@@ -19,3 +20,15 @@ export const JobListingApplicationTable = pgTable("job_listing_applications", {
 },
 table => [primaryKey({ columns: [table.jobListingId, table.userId] })],
 )
+
+
+export const jobListingApplicationRelations = relations(JobListingApplicationTable, ({ one }) => ({
+    jobListing: one(JobListingTable, { 
+        fields: [JobListingApplicationTable.jobListingId], 
+        references: [JobListingTable.id] 
+    }),
+    user: one(UserTable, { 
+        fields: [JobListingApplicationTable.userId], 
+        references: [UserTable.id] 
+    }),
+}));

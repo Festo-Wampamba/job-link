@@ -1,6 +1,8 @@
 import { boolean, index, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { OrganizationTable } from "./organization";
+import { relations } from "drizzle-orm";
+import { JobListingApplicationTable } from "./jobListingApplication";
 
 // 1. Updated for Uganda: Added 'daily' because casual labor is common
 export const wageIntervals = ['hourly', 'daily', 'weekly', 'monthly', 'yearly'] as const 
@@ -45,3 +47,9 @@ export const JobListingTable = pgTable("job_listings", {
 
  (table) => [index().on(table.district)]
 );
+
+export const jobListingReferences = relations(JobListingTable, ({ one, many}) => ({
+    organization: one(OrganizationTable, { fields: [JobListingTable.organizationId], references: [OrganizationTable.id] }),
+    applications: many(JobListingApplicationTable)
+})
+)
