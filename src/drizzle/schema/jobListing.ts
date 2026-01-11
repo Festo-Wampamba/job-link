@@ -1,35 +1,37 @@
 import { boolean, index, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
-import { OrganiztionTable } from "./organization";
+import { OrganizationTable } from "./organization";
 
-export const wageIntervals = ['hourly', 'weekly', 'monthly', 'yearly'] as const 
+// 1. Updated for Uganda: Added 'daily' because casual labor is common
+export const wageIntervals = ['hourly', 'daily', 'weekly', 'monthly', 'yearly'] as const 
 export type WageInterval = (typeof wageIntervals)[number];
-export const  wageIntervalEnum = pgEnum("job_listing_wage_interval", wageIntervals);
+export const wageIntervalEnum = pgEnum("job_listing_wage_interval", wageIntervals);
 
-export const locationRequirements = ['in-office', 'hybrid', 'remote' ] as const 
+export const locationRequirements = ['in-office', 'hybrid', 'remote'] as const 
 export type LocationRequirement = (typeof locationRequirements)[number];
-export const  locationRequirementEnum = pgEnum("job_listing_location_requirement ", locationRequirements);
+export const locationRequirementEnum = pgEnum("job_listing_location_requirement", locationRequirements);
 
 export const experienceLevels = ['junior', 'mid-level', 'senior'] as const 
 export type ExperienceLevel = (typeof experienceLevels)[number];
-export const  experienceLevelEnum = pgEnum("job_listing_experience_interval", experienceLevels);
+export const experienceLevelEnum = pgEnum("job_listing_experience_level", experienceLevels);
 
-export const jobListingStatuses = ['draft', 'published', 'delisted'] as const 
+export const jobListingStatuses = ['draft', 'published', 'closed'] as const 
 export type JobListingStatus = (typeof jobListingStatuses)[number];
-export const  jobListingStatusEnum = pgEnum("job_listing_status", jobListingStatuses);
+export const jobListingStatusEnum = pgEnum("job_listing_status", jobListingStatuses);
 
-export const jobListingTypes = ['internship', 'part-time', 'full-time'] as const 
+export const jobListingTypes = ['internship', 'part-time', 'full-time', 'contract'] as const 
+// Added 'contract' as that is very common in Uganda (NGOs/Projects)
 export type JobListingType = (typeof jobListingTypes)[number];
-export const  jobListingTypeEnum = pgEnum("job_listing_type", jobListingTypes);
+export const jobListingTypeEnum = pgEnum("job_listing_type", jobListingTypes);
 
 export const JobListingTable = pgTable("job_listings", {
     id,
-    organizationId: varchar().references(() => OrganiztionTable.id, { onDelete: 'cascade' }).notNull(),
+    organizationId: varchar().references(() => OrganizationTable.id, { onDelete: 'cascade' }).notNull(),
     title: varchar().notNull(),
     description: text().notNull(),
     wage: integer(),
     wageInterval: wageIntervalEnum(),
-    stateAbbreviation: varchar(),
+    district: varchar(), 
     city: varchar(),
     isFeatured: boolean().notNull().default(false),
     locationRequirements: locationRequirementEnum().notNull(),
@@ -40,5 +42,6 @@ export const JobListingTable = pgTable("job_listings", {
     createdAt,
     updatedAt
  },
-table => [index().on(table.stateAbbreviation)]
-)
+
+ (table) => [index().on(table.district)]
+);
