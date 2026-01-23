@@ -21,8 +21,8 @@ export const jobListingStatuses = ['draft', 'published', 'closed'] as const
 export type JobListingStatus = (typeof jobListingStatuses)[number];
 export const jobListingStatusEnum = pgEnum("job_listing_status", jobListingStatuses);
 
-export const jobListingTypes = ['internship', 'part-time', 'full-time', 'contract'] as const 
 // Added 'contract' as that is very common in Uganda (NGOs/Projects)
+export const jobListingTypes = ['internship', 'part-time', 'full-time', 'contract'] as const 
 export type JobListingType = (typeof jobListingTypes)[number];
 export const jobListingTypeEnum = pgEnum("job_listing_type", jobListingTypes);
 

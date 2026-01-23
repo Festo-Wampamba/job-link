@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WorkConnectUG - AI-Powered Job Matching Platform",
+  title: "Kore-Standards - AI-Powered Job Matching Platform",
   description: "Connecting job seekers with legitimate employers in Uganda using AI-driven semantic matching",
 };
 
