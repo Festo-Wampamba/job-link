@@ -150,66 +150,66 @@ erDiagram
     JOB_LISTINGS ||--o{ JOB_LISTING_APPLICATIONS : "receives"
 
     USERS {
-        varchar id PK
-        varchar email UK
-        varchar name
-        varchar imageUrl
-        timestamp createdAt
-        timestamp updatedAt
+        string id PK
+        string email UK
+        string name
+        string imageUrl
+        string createdAt
+        string updatedAt
     }
 
     ORGANIZATIONS {
-        varchar id PK
-        varchar name
-        varchar imageUrl
-        timestamp createdAt
-        timestamp updatedAt
+        string id PK
+        string name
+        string imageUrl
+        string createdAt
+        string updatedAt
     }
 
     JOB_LISTINGS {
-        uuid id PK
-        varchar organizationId FK
-        varchar title
-        text description
-        integer wage
-        enum wageInterval
-        varchar district
-        varchar city
-        boolean isFeatured
-        enum locationRequirements
-        enum experienceLevel
-        enum status
-        enum type
-        timestamp postedAt
+        string id PK
+        string organizationId FK
+        string title
+        string description
+        int wage
+        string wageInterval
+        string district
+        string city
+        string isFeatured
+        string locationRequirements
+        string experienceLevel
+        string status
+        string type
+        string postedAt
     }
 
     JOB_LISTING_APPLICATIONS {
-        uuid jobListingId PK_FK
-        varchar userId PK_FK
-        text coverLetter
-        text resumeUrl
-        integer rating
-        enum stage
+        string jobListingId PK_FK
+        string userId PK_FK
+        string coverLetter
+        string resumeUrl
+        int rating
+        string stage
     }
 
     USER_RESUMES {
-        varchar userId PK_FK
-        varchar resumeFileUrl
-        varchar resumeFileKey
-        text aiSummary
+        string userId PK_FK
+        string resumeFileUrl
+        string resumeFileKey
+        string aiSummary
     }
 
     USER_NOTIFICATION_SETTINGS {
-        varchar userId PK_FK
-        boolean newJobEmailNotifications
-        varchar aiPrompt
+        string userId PK_FK
+        string newJobEmailNotifications
+        string aiPrompt
     }
 
     ORGANIZATION_USER_SETTINGS {
-        varchar userId PK_FK
-        varchar organizationId PK_FK
-        boolean newApplicationEmailNotifications
-        integer minimumRating
+        string userId PK_FK
+        string organizationId PK_FK
+        string newApplicationEmailNotifications
+        int minimumRating
     }
 ```
 
