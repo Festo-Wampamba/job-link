@@ -151,7 +151,7 @@ erDiagram
 
     USERS {
         string id PK
-        string email UK
+        string email
         string name
         string imageUrl
         string createdAt
@@ -184,8 +184,8 @@ erDiagram
     }
 
     JOB_LISTING_APPLICATIONS {
-        string jobListingId PK_FK
-        string userId PK_FK
+        string jobListingId FK
+        string userId FK
         string coverLetter
         string resumeUrl
         int rating
@@ -193,21 +193,21 @@ erDiagram
     }
 
     USER_RESUMES {
-        string userId PK_FK
+        string userId FK
         string resumeFileUrl
         string resumeFileKey
         string aiSummary
     }
 
     USER_NOTIFICATION_SETTINGS {
-        string userId PK_FK
+        string userId FK
         string newJobEmailNotifications
         string aiPrompt
     }
 
     ORGANIZATION_USER_SETTINGS {
-        string userId PK_FK
-        string organizationId PK_FK
+        string userId FK
+        string organizationId FK
         string newApplicationEmailNotifications
         int minimumRating
     }
