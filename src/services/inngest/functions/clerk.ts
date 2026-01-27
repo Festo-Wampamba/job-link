@@ -1,6 +1,6 @@
 import { NonRetriableError } from "inngest";
 import { inngest } from "../client";
-import { insertUser } from "@/features/users/db/user";
+import { insertUser } from "@/features/users/db/users";
 import { insertUserNotificationSettings } from "@/features/users/db/userNotificationSettings";
 
 export const clerkCreateUser = inngest.createFunction(
