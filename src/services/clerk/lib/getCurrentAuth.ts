@@ -13,7 +13,7 @@ export async function getCurrentUser({ allData = false } = {}) {
     }
 }
 
-function getUser(id: string) {
+async function getUser(id: string) {
     "use cache"
     cacheTag(getUserIdTag(id))
 
