@@ -3,7 +3,6 @@ import { AppSidebarClient } from "./_AppSiderbarClient";
 import Link from "next/dist/client/link";
 import { LogInIcon } from "lucide-react";
 import { SignedOut } from "@clerk/nextjs";
-import { Suspense } from "react";
 import { SidebarUserButton } from "@/features/users/components/SidebarUserButton";
 import { SignedIn } from "@/services/clerk/components/SignInStatus";
 
