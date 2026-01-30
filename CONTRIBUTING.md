@@ -623,7 +623,432 @@ Mockups, references, or examples.
 
 ---
 
-## 📞 Questions or Help?
+## � Git Troubleshooting
+
+This section covers common Git issues you may encounter while contributing and how to resolve them.
+
+### Committed to the Wrong Branch
+
+**Problem**: You made commits on `main` or `develop` instead of a feature branch.
+
+**Solution 1: Move commits to a new branch**
+
+```bash
+# 1. Create a new branch with your current commits
+git branch feature/your-feature-name
+
+# 2. Reset the current branch to the previous state
+git reset --hard origin/main  # or origin/develop
+
+# 3. Switch to your new feature branch
+git checkout feature/your-feature-name
+```
+
+**Solution 2: Move commits to an existing branch**
+
+```bash
+# 1. Note the commit hash you want to move (e.g., abc1234)
+git log --oneline -5
+
+# 2. Switch to your feature branch
+git checkout feature/your-feature-name
+
+# 3. Cherry-pick the commit
+git cherry-pick abc1234
+
+# 4. Go back to the wrong branch and remove the commit
+git checkout main
+git reset --hard origin/main
+```
+
+---
+
+### Merge Conflicts
+
+**Problem**: Git shows merge conflicts when pulling or merging.
+
+**Understanding the conflict markers**:
+
+```
+<<<<<<< HEAD
+Your current changes
+=======
+Incoming changes from develop
+>>>>>>> develop
+```
+
+**Step-by-Step Resolution**:
+
+1. **Identify conflicting files**:
+
+   ```bash
+   git status
+   # Look for files marked as "both modified"
+   ```
+
+2. **Open the conflicting file** and look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+
+3. **Resolve the conflict**:
+   - **Keep your changes**: Delete the incoming changes and markers
+   - **Keep their changes**: Delete your changes and markers
+   - **Keep both**: Merge both changes manually and remove markers
+
+   Example resolution:
+
+   ```typescript
+   // ✅ After resolving
+   export function MyComponent() {
+     // Combined both changes
+     return <div>Final code</div>;
+   }
+   ```
+
+4. **Mark as resolved**:
+
+   ```bash
+   git add src/path/to/conflicted-file.tsx
+   ```
+
+5. **Complete the merge**:
+   ```bash
+   git commit  # Will use auto-generated merge commit message
+   # OR if you were rebasing:
+   git rebase --continue
+   ```
+
+**Aborting a merge**:
+
+If you want to start over:
+
+```bash
+git merge --abort
+# OR if rebasing:
+git rebase --abort
+```
+
+---
+
+### Pull Issues
+
+#### Issue 1: "Your branch is behind 'origin/develop'"
+
+**Problem**: Remote branch has new commits you don't have locally.
+
+**Solution**:
+
+```bash
+# If you have no local commits:
+git pull origin develop
+
+# If you have local commits (recommended):
+git pull --rebase origin develop
+# Then resolve any conflicts if they appear
+```
+
+#### Issue 2: "Your branch is ahead of 'origin/develop'"
+
+**Problem**: You have local commits not pushed to remote.
+
+**Solution**:
+
+```bash
+# Push your commits
+git push origin feature/your-feature-name
+
+# If branch doesn't exist on remote yet:
+git push -u origin feature/your-feature-name
+```
+
+#### Issue 3: Pull rejected due to diverged branches
+
+**Error**: `hint: Updates were rejected because the tip of your current branch is behind`
+
+**Solution**:
+
+```bash
+# Option 1: Rebase (recommended, cleaner history)
+git pull --rebase origin develop
+
+# Option 2: Merge
+git pull origin develop
+
+# If you pushed commits earlier and need to force update (⚠️ CAUTION):
+git push --force-with-lease origin feature/your-feature-name
+```
+
+---
+
+### Branch Divergence (Ahead/Behind)
+
+#### Your branch has diverged from remote
+
+**Error**: `Your branch and 'origin/feature/xyz' have diverged`
+
+**Check the situation**:
+
+```bash
+git status
+# Shows: Your branch and 'origin/feature/xyz' have diverged,
+#        and have 3 and 2 different commits each, respectively.
+```
+
+**Solution 1: Rebase onto remote** (preferred)
+
+```bash
+# Fetch latest remote state
+git fetch origin
+
+# Rebase your local commits on top of remote
+git rebase origin/feature/your-feature-name
+
+# Resolve conflicts if any, then:
+git rebase --continue
+
+# Force push (safe version)
+git push --force-with-lease origin feature/your-feature-name
+```
+
+**Solution 2: Merge remote changes**
+
+```bash
+git pull origin feature/your-feature-name
+# Resolve conflicts and commit
+git push origin feature/your-feature-name
+```
+
+---
+
+### Accidentally Pushed to Wrong Branch
+
+**Problem**: You pushed commits to `main` or `develop` instead of a feature branch.
+
+**Solution**:
+
+```bash
+# 1. Revert the remote branch (if no one else has pulled)
+git push origin +origin/main^:main  # Removes last commit from remote main
+
+# 2. Create feature branch with your changes
+git checkout -b feature/your-feature-name
+
+# 3. Push to correct branch
+git push -u origin feature/your-feature-name
+```
+
+⚠️ **Warning**: Only do this if no one else has pulled the changes!
+
+---
+
+### Undoing Changes
+
+#### Uncommitted changes (not staged)
+
+```bash
+# Discard all local changes
+git checkout -- .
+
+# Discard changes in specific file
+git checkout -- src/path/to/file.tsx
+
+# Or using modern syntax:
+git restore src/path/to/file.tsx
+```
+
+#### Uncommitted changes (staged)
+
+```bash
+# Unstage all files
+git reset HEAD
+
+# Unstage specific file
+git reset HEAD src/path/to/file.tsx
+
+# Or using modern syntax:
+git restore --staged src/path/to/file.tsx
+```
+
+#### Undo last commit (keep changes)
+
+```bash
+# Undo commit but keep changes staged
+git reset --soft HEAD~1
+
+# Undo commit and unstage changes
+git reset HEAD~1
+
+# Undo last 3 commits
+git reset HEAD~3
+```
+
+#### Undo last commit (discard changes)
+
+```bash
+# ⚠️ WARNING: This permanently deletes changes!
+git reset --hard HEAD~1
+```
+
+---
+
+### Stashing Changes
+
+**Use Case**: You need to switch branches but have uncommitted changes.
+
+**Save changes temporarily**:
+
+```bash
+# Stash all uncommitted changes
+git stash
+
+# Stash with a descriptive message
+git stash save "WIP: working on job listing filters"
+
+# Stash including untracked files
+git stash -u
+```
+
+**Retrieve stashed changes**:
+
+```bash
+# List all stashes
+git stash list
+
+# Apply most recent stash (keeps stash in list)
+git stash apply
+
+# Apply and remove most recent stash
+git stash pop
+
+# Apply specific stash
+git stash apply stash@{2}
+
+# Delete a stash
+git stash drop stash@{0}
+
+# Clear all stashes
+git stash clear
+```
+
+---
+
+### Syncing Forked Repository
+
+**Problem**: Your fork is behind the upstream repository.
+
+**Solution**:
+
+```bash
+# 1. Add upstream remote (one-time setup)
+git remote add upstream https://github.com/Festo-Wampamba/kore-standards.git
+
+# 2. Fetch upstream changes
+git fetch upstream
+
+# 3. Merge upstream changes into your local branch
+git checkout develop
+git merge upstream/develop
+
+# 4. Push to your fork
+git push origin develop
+```
+
+---
+
+### Detached HEAD State
+
+**Problem**: Message says "You are in 'detached HEAD' state"
+
+**Getting back to a branch**:
+
+```bash
+# If you want to discard changes made in detached state:
+git checkout develop
+
+# If you want to keep changes:
+git checkout -b feature/new-branch-name  # Creates branch from current state
+git push -u origin feature/new-branch-name
+```
+
+---
+
+### Checking Remote vs Local Status
+
+**Check what's different**:
+
+```bash
+# Fetch remote state without merging
+git fetch origin
+
+# Compare your branch with remote
+git log origin/develop..HEAD       # Commits you have but remote doesn't
+git log HEAD..origin/develop       # Commits remote has but you don't
+
+# Visual comparison
+git log --oneline --graph --all -10
+```
+
+---
+
+### Cleaning Up
+
+#### Remove deleted remote branches from local
+
+```bash
+# Prune deleted remote branches
+git fetch --prune
+
+# OR
+git remote prune origin
+```
+
+#### Delete local branches
+
+```bash
+# Delete merged branch
+git branch -d feature/old-feature
+
+# Force delete unmerged branch (⚠️ Use carefully)
+git branch -D feature/abandoned-feature
+```
+
+#### Delete remote branch
+
+```bash
+git push origin --delete feature/old-feature
+```
+
+---
+
+### Emergency: "I messed up everything!"
+
+**Solution: Use reflog to recover**
+
+```bash
+# View history of HEAD changes
+git reflog
+
+# Find the commit before you "messed up" (e.g., HEAD@{5})
+git reset --hard HEAD@{5}
+```
+
+The reflog keeps commits for ~30 days even if they seem "deleted".
+
+---
+
+### Best Practices to Avoid Issues
+
+1. ✅ **Pull before you start working**: `git pull origin develop`
+2. ✅ **Commit frequently** with clear messages
+3. ✅ **Push regularly** to backup your work
+4. ✅ **Create branches from `develop`**, not `main`
+5. ✅ **Use `--force-with-lease`** instead of `--force` when force-pushing
+6. ✅ **Communicate with team** before force-pushing shared branches
+7. ✅ **Test locally** before pushing
+8. ❌ **Never force-push to `main` or `develop`**
+9. ❌ **Never commit directly to `main`**
+
+---
+
+## �📞 Questions or Help?
 
 If you have questions about contributing:
 
