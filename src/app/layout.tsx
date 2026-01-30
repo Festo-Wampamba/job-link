@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@/services/clerk/components/ClerkProvider";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,14 @@ export const metadata: Metadata = {
     "Connecting job seekers with legitimate employers in Uganda using AI-driven semantic matching",
 };
 
+function ClerkLoading() {
+  return (
+    <div className="flex h-screen w-screen items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-gray-900 dark:border-gray-600 dark:border-t-gray-100" />
+    </div>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +39,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         suppressHydrationWarning
       >
-        <ClerkProvider>{children}</ClerkProvider>
+        <Suspense fallback={<ClerkLoading />}>
+          <ClerkProvider>{children}</ClerkProvider>
+        </Suspense>
       </body>
     </html>
   );
