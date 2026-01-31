@@ -623,7 +623,7 @@ Mockups, references, or examples.
 
 ---
 
-## � Git Troubleshooting
+## 🔧 Git Troubleshooting
 
 This section covers common Git issues you may encounter while contributing and how to resolve them.
 
@@ -1049,6 +1049,12 @@ The reflog keeps commits for ~30 days even if they seem "deleted".
 ---
 
 ## �📞 Questions or Help?
+
+=======
+
+## 📞 Questions or Help?
+
+> > > > > > > feature/employer-dashboard
 
 If you have questions about contributing:
 
