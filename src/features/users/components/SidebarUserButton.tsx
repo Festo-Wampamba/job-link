@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SidebarUserButtonClient } from "./SidebarUserButtonClient";
+import { SidebarUserButtonClient } from "./_SidebarUserButtonClient";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentAuth";
 import { SignOutButton } from "@/services/clerk/components/AuthButton";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
