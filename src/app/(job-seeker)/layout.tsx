@@ -18,7 +18,7 @@ export default function JobSeekerLayout({ children }: { children: ReactNode }) {
       }
       footerButton={<SidebarUserButton />}
     >
-     {children}
+    {children}
     </AppSidebar>
   );
 }
