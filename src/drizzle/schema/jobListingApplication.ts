@@ -12,7 +12,9 @@ export const applicationStageEnum = pgEnum("job_listings_applications_stage", ap
 export const JobListingApplicationTable = pgTable(
     "job_listing_applications",
     {
+        // CASCADE DELETE: When a job listing is deleted, all applications to that job are automatically deleted
         jobListingId: uuid().references(() => JobListingTable.id, { onDelete: "cascade" }).notNull(),
+        // CASCADE DELETE: When a user account is deleted, all their job applications are automatically deleted
         userId: varchar().references(() => UserTable.id, { onDelete: "cascade" }).notNull(),
         coverLetter: text(),
         rating: integer(),
