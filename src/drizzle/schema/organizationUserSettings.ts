@@ -9,13 +9,13 @@ export const OrganizationUserSettingsTable = pgTable(
     "organization_user_settings",
     {
         userId: varchar().notNull().references(() => UserTable.id),
-        OrganizationTable: varchar().notNull().references(() => OrganizationTable.id),
+        organizationId: varchar().notNull().references(() => OrganizationTable.id),
         newApplicationEmailNotification: boolean().notNull().default(false),
         minimumRating: integer(),
         createdAt,
         updatedAt,
     },
-    table => [primaryKey({ columns: [table.userId, table.OrganizationTable] })],
+    table => [primaryKey({ columns: [table.userId, table.organizationId] })],
 )
 
 export const organizationUserSettingsRelations = relations(
@@ -26,7 +26,7 @@ export const organizationUserSettingsRelations = relations(
             references: [UserTable.id],
         }),
         organization: one(OrganizationTable, {
-            fields: [OrganizationUserSettingsTable.userId],
+            fields: [OrganizationUserSettingsTable.organizationId],
             references: [OrganizationTable.id],
         }),
     }),
