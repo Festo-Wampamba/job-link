@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    hostname: ${DB_HOST}
+    ports:
+      - "5432:${DB_PORT}"
+    environment:
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
+      - "POSTGRES_DB=${DB_NAME}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
