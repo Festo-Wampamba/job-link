@@ -4,53 +4,59 @@ import { env } from "@/data/env/server";
 import { NonRetriableError } from "inngest";
 import { deleteUser, insertUser, updateUser } from "@/features/users/db/users";
 import { insertUserNotificationSettings } from "@/features/users/db/userNotificationSettings";
+import { insertOrganization } from "@/features/organizations/db/users";
 
-function verifyWebhook({ raw, headers }: {
-    raw: string,
-    headers: Record<string, string>
+function verifyWebhook({
+  raw,
+  headers,
+}: {
+  raw: string;
+  headers: Record<string, string>;
 }) {
-    return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(raw, headers)
+  return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(raw, headers);
 }
 
-export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-user', name: "Clerk - Create DB User"}, {
+export const clerkCreateUser = inngest.createFunction(
+  { id: "clerk/create-db-user", name: "Clerk - Create DB User" },
+  {
     event: "clerk/user.created",
-}, 
-async ({ event, step}) => {
+  },
+  async ({ event, step }) => {
     await step.run("verify-webhook", async () => {
-        try {
-            verifyWebhook(event.data)
-        } catch {
-            throw new NonRetriableError("Invalid webhook")
-        }
-    })
+      try {
+        verifyWebhook(event.data);
+      } catch {
+        throw new NonRetriableError("Invalid webhook");
+      }
+    });
 
     const userId = await step.run("create-user", async () => {
-        const userData = event.data.data
-        const email = userData.email_addresses.find(
-            email => email.id === userData.primary_email_address_id
-        )
+      const userData = event.data.data;
+      const email = userData.email_addresses.find(
+        (email) => email.id === userData.primary_email_address_id,
+      );
 
-        if (email == null ) {
-            throw new NonRetriableError("No primary email address found")
-        }
+      if (email == null) {
+        throw new NonRetriableError("No primary email address found");
+      }
 
-        await insertUser({
-            id: userData.id,
-            name: `${userData.first_name} ${userData.last_name}`,
-            imageUrl: userData.image_url,
-            email: email.email_address,
-            createdAt: new Date(userData.created_at),
-            updatedAt: new Date(userData.updated_at)
-        })
+      await insertUser({
+        id: userData.id,
+        name: `${userData.first_name} ${userData.last_name}`,
+        imageUrl: userData.image_url,
+        email: email.email_address,
+        createdAt: new Date(userData.created_at),
+        updatedAt: new Date(userData.updated_at),
+      });
 
-        return userData.id
-    })
+      return userData.id;
+    });
 
     await step.run("create-user-notification-settings", async () => {
-        await insertUserNotificationSettings({ userId })
-    })
-}
-)
+      await insertUserNotificationSettings({ userId });
+    });
+  },
+);
 
 export const clerkUpdateUser = inngest.createFunction(
   { id: "clerk/update-db-user", name: "Clerk - Update DB User" },
@@ -108,6 +114,37 @@ export const clerkDeleteUser = inngest.createFunction(
       }
 
       await deleteUser(id);
+    });
+  },
+);
+
+export const clerkCreateOrganization = inngest.createFunction(
+  {
+    id: "clerk/create-db-organization",
+    name: "Clerk - Create DB Organization",
+  },
+  {
+    event: "clerk/organization.created",
+  },
+  async ({ event, step }) => {
+    await step.run("verify-webhook", async () => {
+      try {
+        verifyWebhook(event.data);
+      } catch {
+        throw new NonRetriableError("Invalid webhook");
+      }
+    });
+
+    await step.run("create-organization", async () => {
+      const OrgData = event.data.data;
+
+      await insertOrganization({
+        id: OrgData.id,
+        name: OrgData.name,
+        imageUrl: OrgData.image_url,
+        createdAt: new Date(OrgData.created_at),
+        updatedAt: new Date(OrgData.updated_at),
+      });
     });
   },
 );
