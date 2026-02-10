@@ -55,6 +55,9 @@ import {
 } from "../lib/formatters";
 import districts from "@/data/districts.json";
 import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
+import { LoadingSwap } from "@/components/LoadingSwap";
+import { createJobListing } from "../actions/actions";
+import { toast } from "sonner";
 
 export function JobListingForm() {
   const form = useForm<z.infer<typeof jobListingSchema>>({
@@ -79,8 +82,11 @@ export function JobListingForm() {
     name: "locationRequirement",
   });
 
-  function onSubmit(data: z.infer<typeof jobListingSchema>) {
-    console.log("Form submitted with data:", data);
+  async function onSubmit(data: z.infer<typeof jobListingSchema>) {
+    const response = await createJobListing(data);
+    if (response?.error) {
+      toast.error(response.message);
+    }
   }
 
   return (
@@ -360,18 +366,28 @@ export function JobListingForm() {
         </div>
 
         <FormField
-        name = "description"
-        control={form.control}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Description</FormLabel>
-            <FormControl>
-              <MarkdownEditor {...field} markdown={field.value} />
-            </FormControl>
-            <FormMessage />
+          name="description"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <MarkdownEditor {...field} markdown={field.value} />
+              </FormControl>
+              <FormMessage />
             </FormItem>
-        )} />
-
+          )}
+        />
+        <Button
+          disabled={form.formState.isSubmitting}
+          type="submit"
+          className="w-full"
+        >
+          <LoadingSwap isLoading={form.formState.isSubmitting}>
+            <span className="sr-only">Creating job listing...</span>
+          </LoadingSwap>
+          Create Job Listing
+        </Button>
       </form>
     </Form>
   );

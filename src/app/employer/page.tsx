@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { JobListingTable } from "@/drizzle/schema/jobListing";
-import { getJobListingOrganizationTag } from "@/features/organizations/jobListings/db/cache/jobListings";
+import { getJobListingOrganizationTag } from "@/features/organizations/jobListings/db/cache/jobListings-Not-Needed";
 import { getCurrentOrganization } from "@/services/clerk/lib/getCurrentAuth";
 import { desc, eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
