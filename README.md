@@ -227,6 +227,57 @@ erDiagram
     }
 ```
 
+### Use Case Overview
+
+```mermaid
+useCaseDiagram
+    actor "Job Seeker" as JS
+    actor "Employer" as EMP
+    actor "System Admin" as ADMIN
+
+    package "Kore-Standards Platform" {
+        usecase "Sign Up / Login" as UC1
+        usecase "Manage User Profile" as UC2
+        usecase "Search Jobs (AI Semantic)" as UC3
+        usecase "View Job Details" as UC4
+        usecase "Apply for Job" as UC5
+        usecase "Upload Resume/CV" as UC6
+        usecase "Manage Applications" as UC7
+        usecase "Post Job Listing" as UC8
+        usecase "Verify Organization" as UC9
+        usecase "System Monitoring" as UC10
+    }
+
+    JS --> UC1
+    EMP --> UC1
+    ADMIN --> UC1
+
+    JS --> UC2
+    EMP --> UC2
+
+    JS --> UC3
+    JS --> UC4
+    JS --> UC5
+    JS --> UC6
+    JS --> UC7
+
+    EMP --> UC7
+    EMP --> UC8
+    EMP --> UC9
+
+    ADMIN --> UC9
+    ADMIN --> UC10
+
+    classDef user fill:#60A5FA,stroke:#2563EB,stroke-width:2px,color:#1E293B;
+    classDef admin fill:#F472B6,stroke:#DB2777,stroke-width:2px,color:#1E293B;
+    classDef usecase fill:#D1FAE5,stroke:#059669,stroke-width:2px,color:#064E3B;
+    classDef package fill:#F3F4F6,stroke:#9CA3AF,stroke-width:2px,color:#1F2937;
+
+    class JS,EMP user;
+    class ADMIN admin;
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10 usecase;
+```
+
 ### Table Descriptions
 
 #### 1. **users** - Core User Profiles
