@@ -1,14 +1,11 @@
 "use client";
-
 import { useState } from "react";
-
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { jobListingSchema } from "../actions/schemas";
 import { z } from "zod";
-
 import {
   Form,
   FormControl,
@@ -40,12 +37,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-
 import {
   wageIntervals,
   locationRequirements,
   jobListingTypes,
   experienceLevels,
+  JobListingTable,
 } from "@/drizzle/schema";
 import {
   formatWageInterval,
@@ -56,13 +53,28 @@ import {
 import districts from "@/data/districts.json";
 import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 import { LoadingSwap } from "@/components/LoadingSwap";
-import { createJobListing } from "../actions/actions";
+import { createJobListing, updateJobListing } from "../actions/actions";
 import { toast } from "sonner";
-
-export function JobListingForm() {
+export function JobListingForm({
+  jobListing,
+}: {
+  jobListing: Pick<
+    typeof JobListingTable.$inferSelect,
+    | "title"
+    | "description"
+    | "experienceLevel"
+    | "id"
+    | "district"
+    | "type"
+    | "wage"
+    | "wageInterval"
+    | "city"
+    | "locationRequirement"
+  >;
+}) {
   const form = useForm<z.infer<typeof jobListingSchema>>({
     resolver: zodResolver(jobListingSchema),
-    defaultValues: {
+    defaultValues: jobListing ?? {
       title: "",
       description: "",
       experienceLevel: "junior",
@@ -74,21 +86,20 @@ export function JobListingForm() {
       city: undefined,
     },
   });
-
   const [openDistrict, setOpenDistrict] = useState(false);
-
   const locationType = useWatch({
     control: form.control,
     name: "locationRequirement",
   });
-
   async function onSubmit(data: z.infer<typeof jobListingSchema>) {
+    const action = jobListing
+      ? updateJobListing.bind(null, jobListing.id)
+      : createJobListing;
     const response = await createJobListing(data);
     if (response?.error) {
       toast.error(response.message);
     }
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -107,7 +118,6 @@ export function JobListingForm() {
               </FormItem>
             )}
           />
-
           <FormItem>
             <FormLabel>Wage</FormLabel>
             <div className="flex">
@@ -125,7 +135,7 @@ export function JobListingForm() {
                         value={field.value ?? ""}
                         onChange={(e) => {
                           const val = e.target.valueAsNumber;
-                          field.onChange(isNaN(val) ? undefined : val);
+                          field.onChange(isNaN(val) ? null : val);
                         }}
                       />
                     </FormControl>
@@ -164,7 +174,6 @@ export function JobListingForm() {
             <FormMessage />
           </FormItem>
         </div>
-
         {/* ================= ROW 2: LOCATION (Now Second) ================= */}
         {locationType !== "remote" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
@@ -192,7 +201,6 @@ export function JobListingForm() {
                               ? districts.find((d) => d === field.value)
                               : "Select district"}
                           </span>
-
                           {/* Icons: X if selected, Chevron if empty */}
                           {field.value ? (
                             <div
@@ -246,7 +254,6 @@ export function JobListingForm() {
                 </FormItem>
               )}
             />
-
             {/* CITY INPUT */}
             <FormField
               control={form.control}
@@ -267,7 +274,6 @@ export function JobListingForm() {
             />
           </div>
         )}
-
         {/* ================= ROW 3: CATEGORIES (Now Third) ================= */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
           {/* 1. JOB TYPE */}
@@ -298,7 +304,6 @@ export function JobListingForm() {
               </FormItem>
             )}
           />
-
           {/* 2. WORKPLACE TYPE (Controls visibility of Row 2) */}
           <FormField
             control={form.control}
@@ -334,7 +339,6 @@ export function JobListingForm() {
               </FormItem>
             )}
           />
-
           {/* 3. EXPERIENCE LEVEL */}
           <FormField
             control={form.control}
@@ -364,7 +368,6 @@ export function JobListingForm() {
             )}
           />
         </div>
-
         <FormField
           name="description"
           control={form.control}
