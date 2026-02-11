@@ -375,7 +375,11 @@ export function JobListingForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <MarkdownEditor {...field} markdown={field.value} />
+                <MarkdownEditor
+                  {...field}
+                  markdown={jobListing?.description || ""}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

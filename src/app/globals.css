@@ -1,3 +1,4 @@
+@import "@mdxeditor/editor/style.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -70,8 +71,12 @@ input[type="number"]::-webkit-outer-spin-button {
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
-  --featured: oklch(0.79 0.16 85); /* Changed to Gold for featured badge background */
-  --featured-foreground: oklch(0.985 0 0); /* Changed to White for featured badge text for visibility */
+  --featured: oklch(
+    0.79 0.16 85
+  ); /* Changed to Gold for featured badge background */
+  --featured-foreground: oklch(
+    0.985 0 0
+  ); /* Changed to White for featured badge text for visibility */
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
@@ -106,8 +111,12 @@ input[type="number"]::-webkit-outer-spin-button {
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
   --muted-foreground: oklch(0.705 0.015 286.067);
-  --featured: oklch(0.79 0.16 85); /* Changed to Gold for featured badge background */
-  --featured-foreground: oklch(0.985 0 0); /* Changed to White for featured badge text for visibility */
+  --featured: oklch(
+    0.79 0.16 85
+  ); /* Changed to Gold for featured badge background */
+  --featured-foreground: oklch(
+    0.985 0 0
+  ); /* Changed to White for featured badge text for visibility */
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -149,8 +158,8 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 
   .mdxeditor-toolbar {
-  @apply bg-card border-card rounded-md !border-b-0 shadow-sm flex-wrap;
-}
+    @apply bg-card border-card rounded-md !border-b-0 shadow-sm flex-wrap;
+  }
 
   .mdxeditor-popup-container {
     @apply !z-50;
@@ -159,5 +168,4 @@ input[type="number"]::-webkit-outer-spin-button {
   .dark-theme {
     --basePageBg: var(--muted) !important;
   }
-
 }
