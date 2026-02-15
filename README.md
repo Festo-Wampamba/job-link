@@ -154,7 +154,7 @@ graph TB
 ```mermaid
 erDiagram
     ORGANIZATIONS ||--o{ JOB_LISTINGS : posts
-    ORGANIZATIONS ||--o{ ORGANIZATION_USER_SETTINGS : managed_by
+    ORGANIZATIONS ||--o{ ORGANIZATION_USER_SETTINGS : has_settings
 
     USERS ||--o{ ORGANIZATION_USER_SETTINGS : manages
     USERS ||--o{ JOB_LISTING_APPLICATIONS : submits
@@ -186,31 +186,36 @@ erDiagram
         string title
         text description
         integer wage
-        enum wageInterval
+        enum wageInterval "daily, monthly, yearly"
         string district
         string city
         boolean isFeatured
-        enum locationRequirements
-        enum experienceLevel
-        enum status
-        enum type
+        enum locationRequirement "in-office, hybrid, remote"
+        enum experienceLevel "junior, mid-level, senior"
+        enum status "draft, published, delisted"
+        enum type "internship, part-time, full-time, contract"
         timestamp postedAt
+        timestamp createdAt
+        timestamp updatedAt
     }
 
     ORGANIZATION_USER_SETTINGS {
         string userId "PK, FK"
         string organizationId "PK, FK"
-        boolean newApplicationEmailNotifications
+        boolean newApplicationEmailNotification
         integer minimumRating
+        timestamp createdAt
+        timestamp updatedAt
     }
 
     JOB_LISTING_APPLICATIONS {
         uuid jobListingId "PK, FK"
         string userId "PK, FK"
         text coverLetter
-        text resumeUrl
         integer rating
-        enum stage
+        enum stage "denied, applied, interested, interviewed, hired"
+        timestamp createdAt
+        timestamp updatedAt
     }
 
     USER_RESUMES {
@@ -218,13 +223,73 @@ erDiagram
         string resumeFileUrl
         string resumeFileKey
         string aiSummary
+        timestamp createdAt
+        timestamp updatedAt
     }
 
     USER_NOTIFICATION_SETTINGS {
         string userId "PK, FK"
         boolean newJobEmailNotifications
         string aiPrompt
+        timestamp createdAt
+        timestamp updatedAt
     }
+```
+
+### Use Case Overview
+
+```mermaid
+graph LR
+    %% Actors
+    JS[Job Seeker]
+    EMP[Employer]
+    ADMIN[System Admin]
+
+    %% System Boundary
+    subgraph "Kore-Standards Platform"
+        direction TB
+        UC1([Sign Up / Login])
+        UC2([Manage User Profile])
+        UC3([Search Jobs - AI Semantic])
+        UC4([View Job Details])
+        UC5([Apply for Job])
+        UC6([Upload Resume/CV])
+        UC7([Manage Applications])
+        UC8([Post Job Listing])
+        UC9([Verify Organization])
+        UC10([System Monitoring])
+    end
+
+    %% Relationships
+    JS --> UC1
+    EMP --> UC1
+    ADMIN --> UC1
+
+    JS --> UC2
+    EMP --> UC2
+
+    JS --> UC3
+    JS --> UC4
+    JS --> UC5
+    JS --> UC6
+    JS --> UC7
+
+    EMP --> UC7
+    EMP --> UC8
+    EMP --> UC9
+
+    ADMIN --> UC9
+    ADMIN --> UC10
+
+    %% Styling
+    classDef user fill:#60A5FA,stroke:#2563EB,stroke-width:2px,color:#1E293B;
+    classDef admin fill:#F472B6,stroke:#DB2777,stroke-width:2px,color:#1E293B;
+    classDef usecase fill:#D1FAE5,stroke:#059669,stroke-width:2px,color:#064E3B;
+    classDef package fill:#F3F4F6,stroke:#9CA3AF,stroke-width:2px,color:#1F2937;
+
+    class JS,EMP user;
+    class ADMIN admin;
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10 usecase;
 ```
 
 ### Table Descriptions
