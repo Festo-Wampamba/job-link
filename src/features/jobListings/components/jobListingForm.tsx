@@ -95,7 +95,7 @@ export function JobListingForm({
     const action = jobListing
       ? updateJobListing.bind(null, jobListing.id)
       : createJobListing;
-    const response = await createJobListing(data);
+    const response = await action(data);
     if (response?.error) {
       toast.error(response.message);
     }
@@ -393,7 +393,8 @@ export function JobListingForm({
           <LoadingSwap isLoading={form.formState.isSubmitting}>
             <span className="sr-only">Creating job listing...</span>
           </LoadingSwap>
-          Create Job Listing
+          {/* FIX: Dynamic button text */}
+          {jobListing ? "Update Job Listing" : "Create Job Listing"}
         </Button>
       </form>
     </Form>
