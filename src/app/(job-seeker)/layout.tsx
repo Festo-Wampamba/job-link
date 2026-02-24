@@ -1,22 +1,49 @@
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { SidebarNavMenuGroup } from "@/components/sidebar/SidebarNavMenuGroup";
 import { SidebarUserButton } from "@/features/users/components/SidebarUserButton";
-import { BrainCogIcon, ClipboardListIcon, LayoutDashboardIcon, LogInIcon } from "lucide-react";
+import {
+  BrainCogIcon,
+  ClipboardListIcon,
+  LayoutDashboardIcon,
+  LogInIcon,
+} from "lucide-react";
 import { ReactNode } from "react";
 
-export default function JobSeekerLayout({ children }: { children: ReactNode }) {
+export default function JobSeekerLayout({
+  children,
+  sidebar,
+}: {
+  children: ReactNode;
+  sidebar: ReactNode;
+}) {
   return (
     <AppSidebar
       content={
-        <SidebarNavMenuGroup
-          className="mt-auto"
-          items={[
-            { href: "/", icon: <ClipboardListIcon />, label: "Job Board" },
-            { href: "/ai-search", icon: <BrainCogIcon />, label: "AI Search" },
-            { href: "/employer", icon: <LayoutDashboardIcon/>, label: "Employer Dashboard" },
-            { href: "/sign-in", icon: <LogInIcon />, label: "Sign In", authStatus: "signed-out" },
-          ]}
-        />
+        <>
+          {sidebar}
+          <SidebarNavMenuGroup
+            className="mt-auto"
+            items={[
+              { href: "/", icon: <ClipboardListIcon />, label: "Job Board" },
+              {
+                href: "/ai-search",
+                icon: <BrainCogIcon />,
+                label: "AI Search",
+              },
+              {
+                href: "/employer",
+                icon: <LayoutDashboardIcon />,
+                label: "Employer Dashboard",
+              },
+              {
+                href: "/sign-in",
+                icon: <LogInIcon />,
+                label: "Sign In",
+                authStatus: "signed-out",
+              },
+            ]}
+          />
+        </>
       }
       footerButton={<SidebarUserButton />}
     >
