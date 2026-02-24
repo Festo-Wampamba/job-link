@@ -24,6 +24,8 @@ import { Suspense } from "react";
 import { JobListingDate } from "./JobListingDate";
 import { JobListingBadges } from "@/features/jobListings/components/JobListingBadges";
 import z from "zod";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getJobListingsGlobalTag } from "@/features/jobListings/db/cache/jobListings";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[]>>;
@@ -170,8 +172,8 @@ async function getJobListings(
   parsedParams: z.infer<typeof searchParamsSchema>,
   jobListingId: string | undefined,
 ) {
-  // "use cache"
-
+ "use cache"
+  cacheTag(getJobListingsGlobalTag())
   const whereConditions: (SQL | undefined)[] = [];
 
   // 4. Dynamically push conditions into the array if the param exists
