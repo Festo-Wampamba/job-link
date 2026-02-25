@@ -36,10 +36,22 @@ import {
 import { UGANDA_DISTRICTS } from "@/lib/constants/location";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/LoadingSwap";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const ANY_VALUE = "any";
 
@@ -59,6 +71,7 @@ export function JobListingFilterForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
 
   const form = useForm({
     resolver: zodResolver(jobListingFilterSchema),
@@ -94,6 +107,7 @@ export function JobListingFilterForm() {
     }
 
     router.push(`${pathname}?${newParams.toString()}`);
+    setOpenMobile(false);
   }
 
   return (
@@ -167,7 +181,7 @@ export function JobListingFilterForm() {
                       role="combobox"
                       className={cn(
                         "w-full justify-between",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value && field.value !== ANY_VALUE
@@ -177,7 +191,10 @@ export function JobListingFilterForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <PopoverContent
+                  className="w-[--radix-popover-trigger-width] p-0"
+                  align="start"
+                >
                   <Command>
                     <CommandInput placeholder="Search district..." />
                     <CommandList>
@@ -194,7 +211,7 @@ export function JobListingFilterForm() {
                               "mr-2 h-4 w-4",
                               field.value === ANY_VALUE || !field.value
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           Any
@@ -212,7 +229,7 @@ export function JobListingFilterForm() {
                                 "mr-2 h-4 w-4",
                                 districtName === field.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                             {districtName}
