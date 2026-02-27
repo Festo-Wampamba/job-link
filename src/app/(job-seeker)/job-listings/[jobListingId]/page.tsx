@@ -13,7 +13,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getJobListingIdTag } from "@/features/jobListings/db/cache/jobListings";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
-import { JobListingTable } from "@/drizzle/schema";
+import { JobListingApplicationTable, JobListingTable, UserResumeTable } from "@/drizzle/schema";
 import { getOrganizationIdTag } from "@/features/organizations/db/cache/organization";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound } from "next/navigation";
@@ -26,6 +26,13 @@ import { MarkdownRenderer } from "@/components/markdown/MarkdownRenderer";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentAuth";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SignUpButton } from "@/services/clerk/components/AuthButton";
+import { getJobListingApplicationIdTag } from "@/features/jobListingApplications/db/cache/jobListingApplications";
+import { connection } from "next/server";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { getUserResumeIdTag } from "@/features/users/db/cache/userResumes";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { NewJobListingApplicationForm } from "@/features/jobListingApplications/components/NewJobListingApplicationForm";
+
 
 export default function JobListingPage({
   params,
@@ -177,6 +184,95 @@ async function ApplyButton({ jobListingId }: { jobListingId: string }) {
       </Popover>
     )
   }
+
+  const application = await getJobListingApplication({
+    jobListingId, userId
+  })
+
+    if (application != null) {
+    const formatter = new Intl.RelativeTimeFormat(undefined, {
+      style: "short",
+      numeric: "always",
+    })
+
+    await connection()
+    const difference = differenceInDays(application.createdAt, new Date())
+
+    return (
+      <div className="text-muted-foreground text-sm">
+        You applied for this job{" "}
+        {difference === 0 ? "today" : formatter.format(difference, "days")}
+      </div>
+    )
+  }
+
+  const userResume = await getUserResume(userId)
+  if (userResume == null) {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button>Apply</Button>
+        </PopoverTrigger>
+        <PopoverContent className="flex flex-col gap-2">
+          You need to create an account before applying for a job.
+          <Button asChild>
+            <Link href="/user-settings/resume">Upload Resume</Link>
+          </Button>
+        </PopoverContent>
+      </Popover>
+    )
+  }
+
+    return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Apply</Button>
+      </DialogTrigger>
+      <DialogContent className="md:max-w-3xl max-h-[calc(100%-2rem)]
+      overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Application</DialogTitle>
+          <DialogDescription>
+            Applying for a job cannot be undone and is something you can only do
+            once per job listing.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex-1 overflow-y-auto">
+          <NewJobListingApplicationForm jobListingId={jobListingId} />
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+
+}
+
+
+async function getUserResume(userId: string) {
+  "use cache"
+  cacheTag(getUserResumeIdTag(userId))
+
+  return db.query.UserResumeTable.findFirst({
+    where: eq(UserResumeTable.userId, userId),
+  })
+}
+
+
+async function getJobListingApplication({
+  jobListingId,
+  userId,
+}: {
+  jobListingId: string
+  userId: string
+}) {
+  "use cache"
+  cacheTag(getJobListingApplicationIdTag({ jobListingId, userId }))
+
+  return db.query.JobListingApplicationTable.findFirst({
+    where: and(
+      eq(JobListingApplicationTable.jobListingId, jobListingId),
+      eq(JobListingApplicationTable.userId, userId)
+    ),
+  })
 }
 
 
